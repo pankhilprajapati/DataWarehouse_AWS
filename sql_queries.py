@@ -62,8 +62,8 @@ songplay_table_create = ("""
 CREATE TABLE IF NOT EXISTS fact_songplay
 (
 songplay_id          INTEGER IDENTITY(0,1) PRIMARY KEY sortkey,
-start_time           TIMESTAMP,
-user_id              INTEGER,
+start_time           TIMESTAMP NOT NULL,
+user_id              INTEGER NOT NULL,
 level                VARCHAR,
 song_id              VARCHAR,
 artist_id            VARCHAR,
@@ -151,7 +151,8 @@ SELECT DISTINCT to_timestamp(to_char(se.ts, '9999-99-99 99:99:99'),'YYYY-MM-DD H
                 se.location as location,
                 se.userAgent as user_agent
 FROM staging_events se
-JOIN staging_songs ss ON se.song = ss.title AND se.artist = ss.artist_name;
+JOIN staging_songs ss ON se.song = ss.title AND se.artist = ss.artist_name
+WHERE se.page = 'NextSong';
 """)
 
 user_table_insert = ("""
@@ -161,8 +162,8 @@ SELECT DISTINCT userId as user_id,
                 lastName as last_name,
                 gender as gender,
                 level as level
-FROM staging_events
-where userId IS NOT NULL;
+FROM staging_events se
+where userId IS NOT NULL AND se.page = 'NextSong';
 """)
 
 song_table_insert = ("""
@@ -196,8 +197,8 @@ SELECT distinct ts,
                 EXTRACT(month from ts),
                 EXTRACT(year from ts),
                 EXTRACT(weekday from ts)
-FROM staging_events
-WHERE ts IS NOT NULL;
+FROM staging_events se
+WHERE ts IS NOT NULL AND se.page = 'NextSong';
 """)
 
 create_table_queries = [staging_events_table_create, staging_songs_table_create, songplay_table_create, user_table_create, song_table_create, artist_table_create, time_table_create]
