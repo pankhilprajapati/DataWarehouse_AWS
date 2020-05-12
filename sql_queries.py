@@ -65,8 +65,8 @@ songplay_id          INTEGER IDENTITY(0,1) PRIMARY KEY sortkey,
 start_time           TIMESTAMP NOT NULL,
 user_id              INTEGER NOT NULL,
 level                VARCHAR,
-song_id              VARCHAR,
-artist_id            VARCHAR,
+song_id              VARCHAR NOT NULL,
+artist_id            VARCHAR NOT NULL,
 session_id           INTEGER,
 location             VARCHAR,
 user_agent           VARCHAR
@@ -89,7 +89,7 @@ CREATE TABLE IF NOT EXISTS dim_song
 (
 song_id     VARCHAR PRIMARY KEY,
 title       VARCHAR,
-artist_id   VARCHAR distkey,
+artist_id   VARCHAR NOT NULL distkey,
 year        INTEGER,
 duration    FLOAT
 );
